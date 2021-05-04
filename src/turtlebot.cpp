@@ -63,13 +63,16 @@ void turtlebot::vel_cmd(geometry_msgs::Twist &velocity,
         double max_vel=0.24;
         double Kp=0.0025;
         double Kd=0.007;
+	double Ki=0.003;
+	double integ=0.0;
 
 	//in turtlebot_autorace the error goes from -500 to 500 so we multiply by 1000
-        double angular_z = 300*(Kp *turtlebot::dir + Kd * (turtlebot::dir - turtlebot::last_dir));     
+        double angular_z = 300*(Kp *turtlebot::dir + Kd * (turtlebot::dir - turtlebot::last_dir) + Ki * integ);     
 	
 	//to know the contribution of the derivative part
 	double deriv_contrib = 300 * Kd * (turtlebot::dir - turtlebot::last_dir)/angular_z;		
         
+	integ=integ + turtlebot::dir;
 	last_dir_save=turtlebot::last_dir;
         turtlebot::last_dir=turtlebot::dir;
         
