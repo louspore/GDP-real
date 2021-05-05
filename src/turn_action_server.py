@@ -17,6 +17,7 @@ class TurnAction(object):
         self._action_name=name
         self._as = actionlib.SimpleActionServer(self._action_name, line_follower_turtlebot.msg.TurnAction, execute_cb=self.execute_cb, auto_start = False)
         self._as.start()
+        rospy.on_shutdown(self.fnShutdown)
 
 
     def execute_cb(self,goal):
@@ -61,7 +62,7 @@ class TurnAction(object):
                 self.twist.angular.z=0
                 self.cmd_pub.publish(self.twist)
 
-            r.sleep()
+            r.sleep
 
         if success:
             self.cmd_pub.publish(Twist())
@@ -70,6 +71,11 @@ class TurnAction(object):
             self._as.set_succeeded(self._result)
 
 
+    def fnShutdown(self):
+        cmd=Twist()
+        self.cmd_pub.publish(cmd)
+        rospy.loginfo("Shutting down, cmd vel 0")
+            
 if __name__ == '__main__':
     rospy.init_node('turn_action_server')
     server = TurnAction(rospy.get_name())
